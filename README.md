@@ -35,6 +35,7 @@ with open(index_filename, 'wb') as out:
 ### Precalculate InvertedIndex
 ```
 import os
+import pickle
 
 query = "presidential elections"
 index_filename = os.path.join('data','inverted_index.pkl')
