@@ -1,18 +1,18 @@
-# Inverted Index  
+# Search Engine using Inverted Index and TF-IDF  
 HackNU's Google task: Local search engine
 
 ## Dataset  
 [Kaggle: All the news](https://www.kaggle.com/snapcrack/all-the-news)
 
 ## Basic Usage  
-### Precalculate InvertedIndex
+### Precalculate Inverted Index and TF-IDF
 ```
-from index import InvertedIndex
+from search import SearchEngine
 import os
 import pickle
 import pandas as pd
 
-index_filename = os.path.join('data','inverted_index.pkl')
+engine_filename = os.path.join('data','search_engine.pkl')
 archive_folder = os.path.join('data', 'archive')
 articles_file = os.path.join(archive_folder, 'articles%d.csv')
 articles1_df = pd.read_csv(articles_file % 1, usecols=['content'])
@@ -26,21 +26,21 @@ del articles1_df
 del articles2_df
 del articles3_df
 
-index = InvertedIndex(content)
+engine = SearchEngine(content)  # might take long time to create Inverted Index and TF-IDF vectors
 
-with open(index_filename, 'wb') as out:
-    pickle.dump(index, out, pickle.HIGHEST_PROTOCOL)
+with open(engine_filename, 'wb') as out:
+    pickle.dump(engine, out, pickle.HIGHEST_PROTOCOL)
 ```
 
-### Precalculate InvertedIndex
+### Use SearchEngine
 ```
 import os
 import pickle
 
-query = "presidential elections"
-index_filename = os.path.join('data', 'inverted_index.pkl')
+query = 'presidential elections'
+engine_filename = os.path.join('data', 'search_engine.pkl')
 
-with open(index_filename, 'rb') as inp:
-    index = pickle.load(inp)
-index.get_relevant_articles('presidential elections')
+with open(engine_filename, 'rb') as inp:
+    engine = pickle.load(inp)
+engine.get_relevant_articles(query)  # returns list of 5 tuples (cosine_score, document_id)
 ```
