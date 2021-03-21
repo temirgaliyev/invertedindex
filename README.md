@@ -38,7 +38,7 @@ import os
 import pickle
 
 query = "presidential elections"
-index_filename = os.path.join('data','inverted_index.pkl')
+index_filename = os.path.join('data', 'inverted_index.pkl')
 
 with open(index_filename, 'rb') as inp:
     index = pickle.load(inp)
