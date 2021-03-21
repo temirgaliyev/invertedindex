@@ -2,7 +2,8 @@
 HackNU's Google task: Local search engine
 
 ## Dataset  
-[Kaggle: All the news](https://www.kaggle.com/snapcrack/all-the-news)
+[Kaggle: All the news](https://www.kaggle.com/snapcrack/all-the-news)  
+Note: that's only sample dataset, SearchEngine class may work with any iterable of strings
 
 ## Basic Usage  
 ### Precalculate Inverted Index and TF-IDF
