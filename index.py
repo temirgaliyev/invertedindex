@@ -48,7 +48,7 @@ class DocumentTfIdf:
         return sum(val**2 for val in self.tfidf.values())**0.5
 
 
-class IndexItem:
+class IndexValue:
     def __init__(self):
         self.documents = {}
 
@@ -67,14 +67,14 @@ class IndexItem:
         self.documents[doc_ind] += value
 
     def get_intersection(self, other_item):
-        item = IndexItem()
+        item = IndexValue()
         for key, value in self.documents.items():
             if key in other_item.documents:
                 item.add_document(key, min(other_item[key], value))
         return item
 
     def get_sum(self, other_item):
-        item = IndexItem()
+        item = IndexValue()
         for key, value in self.documents.items():
             item.add_document(key, value)
         for key, value in other_item.documents.items():
@@ -83,6 +83,16 @@ class IndexItem:
 
 
 class InvertedIndex:
+    def __init__(self):
+        self.word_docs = {}
+
+    def __getitem__(self, key):
+        if key not in self.word_docs:
+            self.word_docs[key] = IndexValue()
+        return self.word_docs[key]
+
+
+class SearchEngine:
     def __init__(self, articles,
                  stop_words=STOP_WORDS,
                  preprocess_type=PREPROCESS_TYPE.LEMMATIZATION,
@@ -98,7 +108,7 @@ class InvertedIndex:
         self.spacy_n_process = spacy_n_process
         self._init_preprocessing()
 
-        self.word_docs = defaultdict(IndexItem)
+        self.indexing = InvertedIndex()
         self.doc_lengths = [0]*len(articles)
         self.num_docs = len(articles)
 
@@ -127,7 +137,7 @@ class InvertedIndex:
                 word = self._get_word_from_token(token)
                 if token.text in self.stop_words or word in self.stop_words:
                     continue
-                self.word_docs[word].add_document(doc_id)
+                self.indexing[word].add_document(doc_id)
                 tfidf[word] = self._get_tf(word, doc_id) * \
                     self._get_idf(word)
             self.tfidfs[doc_id] = tfidf
@@ -147,10 +157,10 @@ class InvertedIndex:
             raise ValueError("Incorrect preprocess_type")
 
     def _get_tf(self, word, doc_id):
-        return self.word_docs[word][doc_id]/self.doc_lengths[doc_id]
+        return self.indexing[word][doc_id]/self.doc_lengths[doc_id]
 
     def _get_idf(self, word):
-        num_docs_with_word = len(self.word_docs[word])
+        num_docs_with_word = len(self.indexing[word])
         self.idfs[word] = math.log((1+self.num_docs)/(1+num_docs_with_word)+1)
         return self.idfs[word]
 
@@ -187,9 +197,9 @@ class InvertedIndex:
             query_tfidf[word] = query_tf * self._get_idf(word)
 
             if item is None:
-                item = self.word_docs[word]
+                item = self.indexing[word]
             else:
-                other_item = self.word_docs[word]
+                other_item = self.indexing[word]
                 item = self._reduce(item, other_item)
 
         documents = []
