@@ -1,5 +1,5 @@
-# Search Engine using Inverted Index and TF-IDF  
-HackNU's Google task: Local search engine
+# Local Search engine  
+[HackNU's](https://www.hacknu.kz/) Google task: Local search engine
 
 ## Dataset  
 [Kaggle: All the news](https://www.kaggle.com/snapcrack/all-the-news)  
@@ -45,3 +45,13 @@ with open(engine_filename, 'rb') as inp:
     engine = pickle.load(inp)
 engine.get_relevant_articles(query)  # returns list of 5 tuples (cosine_score, document_id)
 ```
+
+## TODO:
+- [ ] Separate TF-IDF, InvertedIndex and SearchEngine  
+- [ ] Add Ranking using Okapi BM25  
+- [ ] Data preprocessing (remove punctuation, stopwords ...)
+- [ ] Use synonyms
+- [ ] Proximity searching ([link](https://link.springer.com/chapter/10.1007%2F978-3-540-87599-4_33)  |  [link](https://etd.ohiolink.edu/apexprod/rws_etd/send_file/send?accession=case1197213718&disposition=inline))
+- [ ] Use vocab and list in InvertedIndex instead of dictionary (b/c of impossibility not storing key in python's dict)
+- [ ] Add content statistics (Num words, unique words, stat by each word from query)  
+- [ ] Add comparison of different approaches (Percentage of content in top-5 in search by title)
